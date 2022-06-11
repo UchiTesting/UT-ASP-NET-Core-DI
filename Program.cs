@@ -1,5 +1,7 @@
 using ASP_DI;
 
+using Microsoft.Extensions.DependencyInjection.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -20,7 +22,7 @@ builder.Services.AddTransient<IOperationTransient, Operation>();
 builder.Services.AddScoped<IOperationScoped, Operation>();
 builder.Services.AddSingleton<IOperationSingleton, Operation>();
 builder.Services.AddSingleton<IOperationSingletonInstance>(a => new Operation(Guid.Empty));
-builder.Services.AddSingleton<IOperationSingletonInstance>(a => new Operation());
+builder.Services.TryAddSingleton<IOperationSingletonInstance>(a => new Operation());
 
 builder.Services.AddTransient<IOutputLogger, OutputLogger>();
 builder.Services.AddTransient<DependencyService1, DependencyService1>();
