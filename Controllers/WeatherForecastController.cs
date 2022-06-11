@@ -12,20 +12,32 @@ public class WeatherForecastController : ControllerBase
     };
 
     private readonly ILogger<WeatherForecastController> _logger;
+    private readonly DependencyService1 _service1;
+    private readonly DependencyService2 _service2;
 
-    public WeatherForecastController(ILogger<WeatherForecastController> logger)
+    public WeatherForecastController(ILogger<WeatherForecastController> logger,
+        DependencyService1 service1, DependencyService2 service2)
     {
         _logger = logger;
+        _service1 = service1;
+        _service2 = service2;
     }
 
     [HttpGet(Name = "GetWeatherForecast")]
-    public IEnumerable<WeatherForecast> Get()
+    public IEnumerable<object> Get()
     {
-        return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+        _service1.Write();
+        _service2.Write();
+
+        return Enumerable.Range(1, 5).Select(index => new
         {
-            Date = DateTime.Now.AddDays(index),
-            TemperatureC = Random.Shared.Next(-20, 55),
-            Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            Id = index,
+            forecast = new WeatherForecast
+            {
+                Date = DateTime.Now.AddDays(index),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            }
         })
         .ToArray();
     }
